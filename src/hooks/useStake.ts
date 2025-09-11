@@ -1,7 +1,8 @@
+/*eslint-disable @typescript-eslint/no-unused-vars*/
 import React from "react";
 import { contractData, publicClient } from "@/config/config";
 import { useAccount, useWriteContract } from "wagmi";
-import { getAddress, parseEther } from "viem";
+import { getAddress, parseEther, type SimulateContractErrorType } from "viem";
 import { toast } from "sonner";
 
 function useStake() {
@@ -20,11 +21,11 @@ function useStake() {
           account,
         });
 
-        console.log(request);
-
         writeContract(request);
-      } catch (error) {
-        toast.error("Amounts needs to be greater than 0");
+      } catch (err) {
+        const error = err as SimulateContractErrorType;
+
+        toast.error(`${error.name} : You need to approve more tokens to stake`);
       }
     },
     [account, writeContract],

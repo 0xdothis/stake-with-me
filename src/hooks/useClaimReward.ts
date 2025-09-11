@@ -6,10 +6,13 @@ import { useAccount, useWriteContract } from "wagmi";
 import { toast } from "sonner";
 import { formatEther, parseAbiItem, type WatchEventOnLogsFn } from "viem";
 import type { RewardsClaimed, RewardsClaimedEvent } from "@/vite-env";
+import useStakingBalance from "./useStakingBalance";
 
 function useClaimReward() {
   const [claimed, setClaimed] = React.useState<RewardsClaimed | null>(null);
   const { address: account } = useAccount();
+
+  const { pendingRewards } = useStakingBalance();
 
   const { writeContract } = useWriteContract();
 
@@ -32,37 +35,42 @@ function useClaimReward() {
     "event RewardsClaimed(address indexed user, uint256 amount, uint256 timestamp, uint256 newPendingRewards, uint256 totalStaked)",
   );
 
-  React.useEffect(function () {
-    const onClaimRewards: WatchEventOnLogsFn<typeof rewardType> = async (
-      data,
-    ) => {
-      if (!data) {
-        toast.error("Something went wrong");
-      }
+  React.useEffect(
+    function () {
+      const onClaimRewards: WatchEventOnLogsFn<typeof rewardType> = async (
+        data,
+      ) => {
+        if (!data) {
+          toast.error("Something went wrong");
+        }
 
-      const { amount, newPendingRewards, timestamp, totalStaked } = data[0]
-        .args as RewardsClaimedEvent;
+        const { amount, newPendingRewards, timestamp, totalStaked } = data[0]
+          .args as RewardsClaimedEvent;
 
-      setClaimed({
-        amount: Number(formatEther(BigInt(amount))),
-        newPendingRewards: Number(formatEther(newPendingRewards)),
-        timestamp: Number(formatEther(BigInt(timestamp))),
-        totalStaked: Number(formatEther(BigInt(totalStaked))),
+        console.log(newPendingRewards);
+
+        setClaimed({
+          amount: Number(formatEther(BigInt(amount))),
+          newPendingRewards: Number(formatEther(newPendingRewards)),
+          timestamp: Number(formatEther(BigInt(timestamp))),
+          totalStaked: Number(formatEther(BigInt(totalStaked))),
+        });
+      };
+
+      const unwatch = publicClient.watchEvent({
+        address: contractData.contractAddress as `0x${string}`,
+        event: parseAbiItem(
+          "event RewardsClaimed(address indexed user, uint256 amount, uint256 timestamp, uint256 newPendingRewards, uint256 totalStaked)",
+        ),
+        onLogs: onClaimRewards,
       });
-    };
 
-    const unwatch = publicClient.watchEvent({
-      address: contractData.contractAddress as `0x${string}`,
-      event: parseAbiItem(
-        "event RewardsClaimed(address indexed user, uint256 amount, uint256 timestamp, uint256 newPendingRewards, uint256 totalStaked)",
-      ),
-      onLogs: onClaimRewards,
-    });
+      return () => unwatch();
+    },
+    [pendingRewards, claimed?.newPendingRewards, claimed?.amount],
+  );
 
-    return () => unwatch();
-  }, []);
-
-  return { claimRewards, claimed };
+  return { claimRewards, ...claimed };
 }
 
 export default useClaimReward;

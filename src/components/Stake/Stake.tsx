@@ -24,13 +24,13 @@ function Stake() {
   const approve = useApproval();
   const { pendingRewards, stakedAmount } = useStakingBalance();
 
-  if (!pendingRewards || !stakedAmount) return <Spinner />;
+  if (stakedAmount === undefined) return <Spinner />;
 
   return (
     <>
       <StakedRewardAmount
         stakedAmount={stakedAmount}
-        pendingRewards={pendingRewards}
+        pendingRewards={pendingRewards!}
       />
       <div className="flex w-full max-w-lg flex-col gap-6">
         <Card>

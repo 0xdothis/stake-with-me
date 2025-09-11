@@ -7,10 +7,9 @@ function Homepage() {
   const data = usePosition();
   const { isConnected } = useAccount();
 
-  if (!data) {
+  if (data === null) {
     return <Spinner />;
   }
-
   const { totalStaked, initialApr, currentRewardRate, minLockDuration } = data;
   return (
     <div className="container absolute mx-auto top-[100px] left-0 right-0 h-full">

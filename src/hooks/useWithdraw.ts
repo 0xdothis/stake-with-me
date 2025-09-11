@@ -1,3 +1,4 @@
+/*eslint-disable @typescript-eslint/no-unused-vars*/
 import React from "react";
 import { contractData, publicClient } from "@/config/config";
 import { useAccount, useWriteContract } from "wagmi";

@@ -24,13 +24,13 @@ function Withdraw() {
   const { emergencyWithdraw } = useEmergencyWithdraw();
   const { canWithdraw, stakedAmount, pendingRewards } = useStakingBalance();
 
-  if (!stakedAmount || !pendingRewards) return <Spinner />;
+  if (stakedAmount === undefined) return <Spinner />;
 
   return (
     <>
       <StakedRewardAmount
-        stakedAmount={stakedAmount}
-        pendingRewards={pendingRewards}
+        stakedAmount={stakedAmount!}
+        pendingRewards={pendingRewards!}
       />
       <div className="flex w-full max-w-lg flex-col gap-6">
         <Card>
@@ -49,6 +49,7 @@ function Withdraw() {
               </Label>
               <Input
                 id="tabs-demo-name"
+                disabled={!canWithdraw}
                 placeholder="Enter token amount"
                 className="h-10 py-6"
                 value={withdrawAmount}
@@ -68,7 +69,7 @@ function Withdraw() {
               {canWithdraw ? "Withdraw" : "Withdrawal locked"}
             </Button>
             <Button
-              disabled={canWithdraw}
+              disabled={!stakedAmount}
               onClick={() => {
                 emergencyWithdraw();
               }}

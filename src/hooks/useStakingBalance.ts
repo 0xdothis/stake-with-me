@@ -81,6 +81,7 @@ function useStakingBalance() {
             pendingRewards: Number(
               parseFloat(formatEther(BigInt(pendingReward))).toFixed(4),
             ),
+            stakedAmount: Number(formatEther(BigInt(newTotalStaked))),
           };
         });
       };
@@ -97,7 +98,7 @@ function useStakingBalance() {
 
       return () => unwatch();
     },
-    [account],
+    [account, userDetails?.stakedAmount, userDetails?.pendingRewards],
   );
 
   return { ...userDetails };

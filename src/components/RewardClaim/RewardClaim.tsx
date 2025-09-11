@@ -1,5 +1,5 @@
 //import { AppWindowIcon, CodeIcon } from "lucide-react";
-
+import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,15 +18,24 @@ import { toast } from "sonner";
 
 function RewardClaim() {
   const { pendingRewards, stakedAmount } = useStakingBalance();
-  const { claimRewards, claimed } = useClaimReward();
+  const { claimRewards, newPendingRewards } = useClaimReward();
 
-  if (!stakedAmount) return <Spinner />;
+  React.useEffect(
+    function () {
+      if (!newPendingRewards) return;
+    },
+    [newPendingRewards],
+  );
+
+  if (stakedAmount === undefined) return <Spinner />;
 
   return (
     <>
       <StakedRewardAmount
         stakedAmount={stakedAmount!}
-        pendingRewards={pendingRewards!}
+        pendingRewards={
+          newPendingRewards ? newPendingRewards! : pendingRewards!
+        }
       />
       <div className="flex w-full max-w-lg flex-col gap-6">
         <Card>
@@ -48,7 +57,7 @@ function RewardClaim() {
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button
-              disabled={!!claimed?.newPendingRewards}
+              disabled={!!newPendingRewards}
               onClick={() => {
                 claimRewards();
                 toast("Reward claimed successfully");
