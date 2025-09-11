@@ -2,6 +2,7 @@ import React from "react";
 import { contractData, publicClient } from "@/config/config";
 import { useAccount, useWriteContract } from "wagmi";
 import { getAddress, parseEther } from "viem";
+import { toast } from "sonner";
 
 function useStake() {
   const { address: account } = useAccount();
@@ -10,15 +11,21 @@ function useStake() {
 
   return React.useCallback(
     async (amount: string) => {
-      const { request } = await publicClient.simulateContract({
-        address: getAddress(contractData.contractAddress),
-        abi: contractData.contractABI,
-        functionName: "stake",
-        args: [parseEther(amount)],
-        account,
-      });
+      try {
+        const { request } = await publicClient.simulateContract({
+          address: getAddress(contractData.contractAddress),
+          abi: contractData.contractABI,
+          functionName: "stake",
+          args: [parseEther(amount)],
+          account,
+        });
 
-      writeContract(request);
+        console.log(request);
+
+        writeContract(request);
+      } catch (error) {
+        toast.error("Amounts needs to be greater than 0");
+      }
     },
     [account, writeContract],
   );

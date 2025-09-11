@@ -1,27 +1,48 @@
 import React from "react";
 import { contractData, publicClient } from "@/config/config";
 import { useAccount, useWriteContract } from "wagmi";
-import { parseEther } from "viem";
+import { parseAbiItem, parseEther } from "viem";
+import { toast } from "sonner";
 
 function useWithdraw() {
   const { address: account } = useAccount();
 
   const { writeContract } = useWriteContract();
 
-  return React.useCallback(
+  const withdraw = React.useCallback(
     async (amount: string) => {
-      const { request } = await publicClient.simulateContract({
-        address: contractData.contractAddress,
-        abi: contractData.contractABI,
-        functionName: "withdraw",
-        args: [parseEther(amount)],
-        account,
-      });
+      try {
+        const { request } = await publicClient.simulateContract({
+          address: contractData.contractAddress,
+          abi: contractData.contractABI,
+          functionName: "withdraw",
+          args: [parseEther(amount)],
+          account,
+        });
 
-      writeContract(request);
+        console.log(request);
+
+        writeContract(request);
+      } catch (err) {
+        toast.error("You can't withdraw amount of 0");
+      }
     },
     [account, writeContract],
   );
+
+  React.useEffect(function () {
+    const unwatch = publicClient.watchEvent({
+      address: contractData.contractAddress as `0x${string}`,
+      event: parseAbiItem(
+        "event Withdrawn(address indexed user, uint256 amount, uint256 timestamp, uint256 newTotalStaked, uint256 currentRewardRate, uint256 rewardsAccrued)",
+      ),
+      onLogs: (logs) => console.log(logs),
+    });
+
+    return () => unwatch();
+  }, []);
+
+  return withdraw;
 }
 
 export default useWithdraw;

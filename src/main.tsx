@@ -5,7 +5,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import App from "./App.tsx";
 import Stake from "./components/Stake/Stake.tsx";
-import AppLayout from "./components/AppLayout";
 import Withdraw from "./components/Withdraw";
 
 import { WagmiProvider, createConfig, http } from "wagmi";
@@ -14,6 +13,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConnectKitProvider, getDefaultConfig } from "connectkit";
 import Positions from "./components/Positions";
 import RewardClaim from "./components/RewardClaim";
+import { Toaster } from "sonner";
+import Homepage from "./components/Homepage/Homepage.tsx";
 
 const config = createConfig(
   getDefaultConfig({
@@ -45,7 +46,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true, // Use 'index' for the default child route
-        element: <AppLayout />,
+        element: <Homepage />,
       },
       {
         path: "stake",
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
         element: <Positions />,
       },
       {
-        path: "/claim",
+        path: "claim",
         element: <RewardClaim />,
       },
     ],
@@ -73,6 +74,7 @@ createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <ConnectKitProvider>
           <RouterProvider router={router} />
+          <Toaster />
         </ConnectKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

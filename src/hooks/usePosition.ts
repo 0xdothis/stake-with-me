@@ -1,29 +1,63 @@
 import React from "react";
 import { contractData, publicClient } from "@/config/config";
-import { useAccount, useWriteContract } from "wagmi";
-import useApproval from "./useApproval";
+import { toast } from "sonner";
+import { formatEther } from "viem";
+import type { IntialDataProp } from "@/vite-env";
 
-function useStake() {
-  const { address: account } = useAccount();
-  const approval = useApproval();
+//import { useWriteContract } from "wagmi";
 
-  const { writeContract } = useWriteContract();
+function usePosition() {
+  const [initalData, setInitialData] = React.useState<IntialDataProp | null>(
+    null,
+  );
 
-  return React.useCallback(
-    async (amount: string) => {
-      approval(amount);
-      const { request } = await publicClient.simulateContract({
-        address: contractData.contractAddress,
+  React.useEffect(function () {
+    (async () => {
+      const totalStaked = await publicClient.readContract({
+        address: contractData.contractAddress as `0x${string}`,
         abi: contractData.contractABI,
-        functionName: "stake",
-        args: [amount],
-        account,
+        functionName: "totalStaked",
       });
 
-      writeContract(request);
-    },
-    [approval, account, writeContract],
-  );
+      const currentRewardRate = await publicClient.readContract({
+        address: contractData.contractAddress as `0x${string}`,
+        abi: contractData.contractABI,
+        functionName: "currentRewardRate",
+      });
+
+      const minLockDuration = await publicClient.readContract({
+        address: contractData.contractAddress as `0x${string}`,
+        abi: contractData.contractABI,
+        functionName: "minLockDuration",
+      });
+
+      const initialApr = await publicClient.readContract({
+        address: contractData.contractAddress as `0x${string}`,
+        abi: contractData.contractABI,
+        functionName: "initialApr",
+      });
+
+      if (
+        !initialApr ||
+        !totalStaked ||
+        !currentRewardRate ||
+        !minLockDuration
+      ) {
+        toast.error("Failed to load data");
+      }
+
+      setInitialData({
+        totalStaked: Number(formatEther(totalStaked)),
+        initialApr: Number(parseFloat(formatEther(initialApr)).toFixed(4)),
+        currentRewardRate: Number(
+          parseFloat(formatEther(currentRewardRate)).toFixed(4),
+        ),
+        minLockDuration: Number(minLockDuration) / (24 * 3600),
+      });
+    })();
+  }, []);
+
+  return initalData;
 }
 
-export default useStake;
+export default usePosition;

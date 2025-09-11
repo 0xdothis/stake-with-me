@@ -1,4 +1,4 @@
-import AppLayout from "./components/AppLayout";
+import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 
 function App() {
@@ -12,7 +12,9 @@ function App() {
         }}
       />
       <Header />
-      <AppLayout />
+      <main className="min-h-screen flex flex-col justify-center items-center gap-8">
+        <Outlet />
+      </main>
     </div>
   );
 }
