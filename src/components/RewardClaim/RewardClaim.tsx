@@ -20,13 +20,13 @@ function RewardClaim() {
   const { pendingRewards, stakedAmount } = useStakingBalance();
   const { claimRewards, claimed } = useClaimReward();
 
-  if (!pendingRewards || !stakedAmount) return <Spinner />;
+  if (!stakedAmount) return <Spinner />;
 
   return (
     <>
       <StakedRewardAmount
-        stakedAmount={stakedAmount}
-        pendingRewards={pendingRewards}
+        stakedAmount={stakedAmount!}
+        pendingRewards={pendingRewards!}
       />
       <div className="flex w-full max-w-lg flex-col gap-6">
         <Card>
