@@ -74,9 +74,8 @@ function useStakingBalance() {
 
         if (!timestamp || !newTotalStaked || !amount) return;
 
-        console.log("", newTotalStaked);
 
-        console.log("Staked Data", stakedEventArgs.args);
+
 
         setUserDetails((prev) => {
           if (!prev) return;

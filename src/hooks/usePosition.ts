@@ -2,12 +2,12 @@ import React from "react";
 import { contractData, publicClient } from "@/config/config";
 import { toast } from "sonner";
 import { formatEther } from "viem";
-import type { IntialDataProp } from "@/vite-env";
+import type { InitialDataProp } from "@/vite-env";
 
 //import { useWriteContract } from "wagmi";
 
 function usePosition() {
-  const [initalData, setInitialData] = React.useState<IntialDataProp | null>(
+  const [initalData, setInitialData] = React.useState<InitialDataProp | null>(
     null,
   );
 

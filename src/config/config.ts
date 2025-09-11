@@ -5,7 +5,7 @@ import { erc20Abi } from "viem";
 
 export const publicClient = createPublicClient({
   chain: sepolia,
-  transport: http(import.meta.env.VITE_QUICKNODE_RPC_URL),
+  transport: http(import.meta.env.VITE_ALCHEMY_RPC_URL),
 });
 
 export const walletClient = createWalletClient({

@@ -43,8 +43,6 @@ function useClaimReward() {
       const { amount, newPendingRewards, timestamp, totalStaked } = data[0]
         .args as RewardsClaimedEvent;
 
-      console.log(data);
-
       setClaimed({
         amount: Number(formatEther(BigInt(amount))),
         newPendingRewards: Number(formatEther(newPendingRewards)),
