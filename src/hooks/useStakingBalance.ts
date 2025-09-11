@@ -74,6 +74,15 @@ function useStakingBalance() {
 
         if (!timestamp || !newTotalStaked || !amount) return;
 
+        setUserDetails((prev) => {
+          if (!prev) return;
+          return {
+            ...prev,
+            pendingRewards: Number(
+              parseFloat(formatEther(BigInt(pendingReward))).toFixed(4),
+            ),
+          };
+        });
       };
 
       const unwatch = publicClient.watchEvent({
