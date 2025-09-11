@@ -16,15 +16,13 @@ import useEmergencyWithdraw from "@/hooks/useEmergencyWithdraw";
 import useStakingBalance from "@/hooks/useStakingBalance";
 import StakedRewardAmount from "../StakedRewardAmount";
 import Spinner from "../Spinner";
-import { toast } from "sonner";
 
 function Withdraw() {
   const [withdrawAmount, setWithdrawAmount] = React.useState("");
 
   const withdraw = useWithdraw();
   const { emergencyWithdraw } = useEmergencyWithdraw();
-  const { canWithdraw, stakedAmount, pendingRewards, amount } =
-    useStakingBalance();
+  const { canWithdraw, stakedAmount, pendingRewards } = useStakingBalance();
 
   if (!stakedAmount || !pendingRewards) return <Spinner />;
 
@@ -34,7 +32,6 @@ function Withdraw() {
         stakedAmount={stakedAmount}
         pendingRewards={pendingRewards}
       />
-
       <div className="flex w-full max-w-lg flex-col gap-6">
         <Card>
           <CardHeader>
@@ -63,7 +60,6 @@ function Withdraw() {
             <Button
               onClick={() => {
                 withdraw(withdrawAmount);
-                toast(`${amount} token withdrawn successfully`);
                 setWithdrawAmount("");
               }}
               disabled={!canWithdraw}
@@ -75,7 +71,6 @@ function Withdraw() {
               disabled={canWithdraw}
               onClick={() => {
                 emergencyWithdraw();
-                toast(`${amount} token withdrawn successfully`);
               }}
               className="w-1/2 h-12 bg-red-600 text-white text-lg font-bold hover:bg-red-700"
             >

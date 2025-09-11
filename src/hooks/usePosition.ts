@@ -48,10 +48,9 @@ function usePosition() {
 
       setInitialData({
         totalStaked: Number(formatEther(totalStaked)),
-        initialApr: Number(parseFloat(formatEther(initialApr)).toFixed(4)),
-        currentRewardRate: Number(
-          parseFloat(formatEther(currentRewardRate)).toFixed(4),
-        ),
+        initialApr: Number(initialApr),
+        currentRewardRate: Number(currentRewardRate),
+
         minLockDuration: Number(minLockDuration) / (24 * 3600),
       });
     })();

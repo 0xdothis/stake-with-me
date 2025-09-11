@@ -25,10 +25,9 @@ function RewardClaim() {
   return (
     <>
       <StakedRewardAmount
-        pendingRewards={pendingRewards}
         stakedAmount={stakedAmount}
+        pendingRewards={pendingRewards}
       />
-
       <div className="flex w-full max-w-lg flex-col gap-6">
         <Card>
           <CardHeader>

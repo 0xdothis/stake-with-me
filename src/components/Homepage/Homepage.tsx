@@ -21,6 +21,7 @@ function Homepage() {
             <span className="bg-purple-900 text-white p-2">Stake Easy</span>{" "}
             dApp
           </h1>
+
           <p className="text-2xl font-medium tracking-wide">
             Discover the future of decentralized finance with our cutting-edge
             staking platform, built to empower you with seamless, secure, and
@@ -53,7 +54,7 @@ function Homepage() {
             </div>
             <div className="bg-indigo-700 p-4 text-white">
               <span className="font-bold">Reward Rate</span>
-              <h3 className="text-4xl font-extrabold ">{currentRewardRate}</h3>
+              <h3 className="text-4xl font-extrabold ">{currentRewardRate}%</h3>
             </div>
             <div className="bg-cyan-500 p-4 text-white">
               <span className="font-bold">Lock Period</span>
