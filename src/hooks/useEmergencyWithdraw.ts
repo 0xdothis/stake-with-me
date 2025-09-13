@@ -56,8 +56,6 @@ function useEmergencyWithdraw() {
         const { amount, newTotalStaked, timestamp, penalty } = data[0]
           .args as EmergencyWithdrawnEvent;
 
-        console.log(newTotalStaked);
-
         setEmergencyWithdrawData({
           amount: Number(formatEther(BigInt(amount))),
           newTotalStaked: Number(formatEther(newTotalStaked)),
@@ -76,7 +74,7 @@ function useEmergencyWithdraw() {
 
       return () => unwatch();
     },
-    [emergencyWithdrawData?.newTotalStaked],
+    [account],
   );
 
   return { emergencyWithdraw, emergencyWithdrawData };

@@ -43,7 +43,7 @@ function usePosition() {
         !currentRewardRate ||
         !minLockDuration
       ) {
-        toast.error("Your data is laoding");
+        toast.error("Your data is loading");
       }
 
       setInitialData({
