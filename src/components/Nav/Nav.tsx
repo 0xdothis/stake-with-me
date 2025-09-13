@@ -4,7 +4,7 @@ function Nav() {
   return (
     <nav className="flex justify-between">
       <Link to="/">
-        <h1 className="text-3xl font-mono font-bold">StakeWithMe</h1>
+        <h1 className="text-3xl font-mono font-extrabold">StakeEasy</h1>
       </Link>
       <ul className="flex items-center gap-8 text-[1.25rem] font-bold">
         <li className="hover:text-gray-600">

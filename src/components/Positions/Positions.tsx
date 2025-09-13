@@ -1,50 +1,88 @@
 //import { AppWindowIcon, CodeIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import ConnectWallet from "../ConnectWallet";
+import { useAccount } from "wagmi";
+import useStakingBalance from "@/hooks/useStakingBalance";
+import Spinner from "../Spinner";
 
 function Positions() {
+  const { address } = useAccount();
+
+  const { stakedAmount, timeUntilUnlock, lastStakeTimeStamp, pendingRewards } =
+    useStakingBalance();
+
+  const timeUnlock = Math.round(Number(timeUntilUnlock!) / (24 * 3600));
+  const lastStake = new Date(Number(lastStakeTimeStamp) * 1000);
+
+  if (!address) return <ConnectWallet />;
+
+  if (stakedAmount === undefined) return <Spinner />;
+
   return (
     <div className="flex w-full max-w-lg flex-col gap-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">
-            Withdraw Your Token
-          </CardTitle>
-          <CardDescription className="text-md text-center font-bold">
-            You can withdraw your staked token
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-6">
-          <div className="grid gap-3">
-            <Label htmlFor="tabs-demo-name" className="text-md font-bold">
-              Amount of token to withdraw
+      <h1 className="font-bold font-mono text-4xl text-center mb-6">
+        Users Statistics
+      </h1>
+      <div className="grid grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Staked Token</CardTitle>
+          </CardHeader>
+          <CardContent className="flex justify-center items-center">
+            <Label
+              htmlFor="tabs-demo-name"
+              className="text-md font-bold text-center text-5xl"
+            >
+              {stakedAmount}
             </Label>
-            <Input
-              id="tabs-demo-name"
-              placeholder="Enter token amount"
-              className="h-10 py-6"
-            />
-          </div>
-        </CardContent>
-        <CardFooter className="flex gap-2">
-          <Button className="w-1/2 h-12 bg-purple-400 text-white text-lg font-bold hover:bg-purple-500">
-            Withdraw
-          </Button>
-          <Button className="w-1/2 h-12 bg-purple-600 text-white text-lg font-bold hover:bg-purple-700">
-            Emergency Withdraw
-          </Button>
-        </CardFooter>
-      </Card>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">
+              Time Until Unlocks
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex justify-center items-center">
+            <Label
+              htmlFor="tabs-demo-name"
+              className="text-md font-bold text-center text-5xl"
+            >
+              {timeUnlock} Days
+            </Label>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Last Staked</CardTitle>
+          </CardHeader>
+          <CardContent className="flex justify-center items-center">
+            <Label
+              htmlFor="tabs-demo-name"
+              className="text-md font-bold text-center text-3xl"
+            >
+              {lastStake.toLocaleDateString()}
+            </Label>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">
+              Pending Rewards
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex justify-center items-center">
+            <Label
+              htmlFor="tabs-demo-name"
+              className="text-md font-bold text-center text-4xl"
+            >
+              {pendingRewards}
+            </Label>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

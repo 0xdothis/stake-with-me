@@ -1,5 +1,4 @@
 //import { AppWindowIcon, CodeIcon } from "lucide-react";
-import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,18 +13,16 @@ import useClaimReward from "@/hooks/useClaimReward";
 import useStakingBalance from "@/hooks/useStakingBalance";
 import StakedRewardAmount from "../StakedRewardAmount";
 import Spinner from "../Spinner";
-import { toast } from "sonner";
+import { useAccount } from "wagmi";
+import ConnectWallet from "../ConnectWallet";
 
 function RewardClaim() {
   const { pendingRewards, stakedAmount } = useStakingBalance();
   const { claimRewards, newPendingRewards } = useClaimReward();
 
-  React.useEffect(
-    function () {
-      if (!newPendingRewards) return;
-    },
-    [newPendingRewards],
-  );
+  const { address } = useAccount();
+
+  if (!address) return <ConnectWallet />;
 
   if (stakedAmount === undefined) return <Spinner />;
 
@@ -33,9 +30,7 @@ function RewardClaim() {
     <>
       <StakedRewardAmount
         stakedAmount={stakedAmount!}
-        pendingRewards={
-          newPendingRewards ? newPendingRewards! : pendingRewards!
-        }
+        pendingRewards={newPendingRewards ?? pendingRewards!}
       />
       <div className="flex w-full max-w-lg flex-col gap-6">
         <Card>
@@ -51,17 +46,14 @@ function RewardClaim() {
                 htmlFor="tabs-demo-name"
                 className="text-md font-bold text-center text-3xl"
               >
-                {pendingRewards}
+                {newPendingRewards ?? pendingRewards}
               </Label>
             </div>
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button
               disabled={!!newPendingRewards}
-              onClick={() => {
-                claimRewards();
-                toast("Reward claimed successfully");
-              }}
+              onClick={() => claimRewards()}
               className="w-full h-12 bg-purple-600 text-white text-lg font-bold hover:bg-purple-700"
             >
               Claim Reward

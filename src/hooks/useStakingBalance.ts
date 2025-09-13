@@ -18,7 +18,7 @@ function useStakingBalance() {
   React.useEffect(
     function () {
       (async () => {
-        if (!publicClient) return;
+        if (!publicClient || !account) return;
 
         const request = await publicClient.readContract({
           address: contractData.contractAddress as `0x${string}`,
@@ -27,17 +27,12 @@ function useStakingBalance() {
           args: [account as `0x${string}`],
         });
 
-        const {
-          stakedAmount,
-          lastStakeTimeStamp,
-          pendingRewards,
-          canWithdraw,
-          timeUntilUnlock,
-        } = request as unknown as UserDetailsProp;
+        const { stakedAmount, pendingRewards, canWithdraw, timeUntilUnlock } =
+          request as unknown as UserDetailsProp;
 
         setUserDetails({
           stakedAmount: Number(formatEther(BigInt(stakedAmount))),
-          lastStakeTimeStamp,
+          lastStakeTimeStamp: Number(request.lastStakeTimestamp),
           pendingRewards: Number(
             parseFloat(formatEther(BigInt(pendingRewards))).toFixed(4),
           ),

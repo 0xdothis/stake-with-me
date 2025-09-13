@@ -16,13 +16,20 @@ import useEmergencyWithdraw from "@/hooks/useEmergencyWithdraw";
 import useStakingBalance from "@/hooks/useStakingBalance";
 import StakedRewardAmount from "../StakedRewardAmount";
 import Spinner from "../Spinner";
+import { useAccount } from "wagmi";
+import ConnectWallet from "../ConnectWallet";
+import useClaimReward from "@/hooks/useClaimReward";
 
 function Withdraw() {
   const [withdrawAmount, setWithdrawAmount] = React.useState("");
 
   const withdraw = useWithdraw();
   const { emergencyWithdraw } = useEmergencyWithdraw();
+  const { address } = useAccount();
   const { canWithdraw, stakedAmount, pendingRewards } = useStakingBalance();
+  const { newPendingRewards } = useClaimReward();
+
+  if (!address) return <ConnectWallet />;
 
   if (stakedAmount === undefined) return <Spinner />;
 
@@ -30,7 +37,7 @@ function Withdraw() {
     <>
       <StakedRewardAmount
         stakedAmount={stakedAmount!}
-        pendingRewards={pendingRewards!}
+        pendingRewards={newPendingRewards ?? pendingRewards!}
       />
       <div className="flex w-full max-w-lg flex-col gap-6">
         <Card>
@@ -49,7 +56,7 @@ function Withdraw() {
               </Label>
               <Input
                 id="tabs-demo-name"
-                disabled={!canWithdraw}
+                disabled={!!canWithdraw}
                 placeholder="Enter token amount"
                 className="h-10 py-6"
                 value={withdrawAmount}
@@ -69,13 +76,13 @@ function Withdraw() {
               {canWithdraw ? "Withdraw" : "Withdrawal locked"}
             </Button>
             <Button
-              disabled={!stakedAmount}
+              disabled={stakedAmount === 0}
               onClick={() => {
                 emergencyWithdraw();
               }}
               className="w-1/2 h-12 bg-red-600 text-white text-lg font-bold hover:bg-red-700"
             >
-              {!canWithdraw && "Emergency Withdraw"}
+              {stakedAmount > 0 && "Emergency Withdraw"}
             </Button>
           </CardFooter>
         </Card>

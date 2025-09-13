@@ -1,7 +1,7 @@
-import { STAKING_CONTRACT_ABI } from "@/constant/abi";
+import { STAKING_CONTRACT_ABI } from "@/constant/STAKING_CONTRACT_ABI";
 import { createPublicClient, createWalletClient, http } from "viem";
 import { sepolia } from "viem/chains";
-import { erc20Abi } from "viem";
+import { TOKEN_CONTRACT_ABI } from "@/constant/TOKEN_CONTRACT_ABI";
 
 export const publicClient = createPublicClient({
   chain: sepolia,
@@ -14,11 +14,11 @@ export const walletClient = createWalletClient({
 });
 
 export const contractData = {
-  contractAddress: import.meta.env.VITE_STAKE_WITH_ME_CONTRACT,
+  contractAddress: import.meta.env.VITE_STAKE_EASY_CONTRACT,
   contractABI: STAKING_CONTRACT_ABI,
 };
 
 export const tokenData = {
-  tokenAddress: import.meta.env.VITE_STAKE_WITH_ME_TOKEN_CONTRACT,
-  tokenABI: erc20Abi,
+  tokenAddress: import.meta.env.VITE_STAKE_EASY_TOKEN_CONTRACT,
+  tokenABI: TOKEN_CONTRACT_ABI,
 };
